@@ -63,6 +63,7 @@ typedef enum {
   alg_tiger,
   alg_whirlpool, 
   alg_sha3,
+  alg_xxhash,
   
   // alg_unknown must always be last in this list. It's used
   // as a loop terminator in many functions.
@@ -79,6 +80,7 @@ inline std::ostream & operator << (std::ostream &os,const hashid_t &h)
   case alg_tiger:     os << "alg_tiger" ; break ;
   case alg_whirlpool: os << "alg_whirlpool" ; break ;
   case alg_sha3:      os << "alg_sha3" ; break ;
+  case alg_xxhash:    os << "alg_xxhash"; break;
   case alg_unknown:   os << "alg_unknown" ; break ;
   }
 
@@ -94,6 +96,7 @@ inline std::ostream & operator << (std::ostream &os,const hashid_t &h)
 #define DEFAULT_ENABLE_TIGER       FALSE
 #define DEFAULT_ENABLE_WHIRLPOOL   FALSE
 #define DEFAULT_ENABLE_SHA3        FALSE
+#define DEFAULT_ENABLE_XXHASH      FALSE
 
 class iomode {
 public:;
@@ -220,7 +223,7 @@ public:
     static file_types decode_file_type(const struct __stat64 &sb);
 
     // stat a file, print an error and return -1 if it fails, otherwise return 0
-    static int stat(const filename_t &path,file_metadata_t *m,class display &ocb); 
+    static int stat(const filename_t &path,file_metadata_t *m,class display &ocb, bool is_symlink = false);
     class fileid_t {				      // uniquely defines a file on this system
     public:
 	fileid_t():dev(0),ino(0){};
@@ -294,8 +297,9 @@ public:
     uint64_t	stat_megs() const {	// return how many megabytes is the file in MB?
 	return stat_bytes / ONE_MEGABYTE;
     }
-    static const size_t MD5DEEP_IDEAL_BLOCK_SIZE = 8192;
+    static const size_t MD5DEEP_IDEAL_BLOCK_SIZE = 131072;
     file_data_hasher_t(class display *ocb_):
+	file_is_symlink(false),
 	ocb(ocb_),			// where we put results
 	handle(0),
 	fd(-1),
@@ -322,7 +326,7 @@ public:
 
     /* The actual file to hash */
     filename_t file_name_to_hash;
-
+    bool file_is_symlink;
     /* Where the results go */
     class display *ocb;
     
@@ -585,6 +589,7 @@ class display {
       opt_display_hash(false),
       opt_show_matched(false),
       opt_case_sensitive(true),
+      opt_readlink(false),
       opt_iomode(iomode::buffered),	// by default, use buffered
 #ifdef HAVE_PTHREAD
       opt_threadcount(threadpool::numCPU()),
@@ -620,6 +625,7 @@ class display {
     bool	opt_display_hash;
     bool	opt_show_matched;
     bool        opt_case_sensitive;
+    bool        opt_readlink;
     int		opt_iomode;
     int		opt_threadcount;
 
@@ -755,7 +761,7 @@ class display {
     void	finalize_matching();
 
     /* hash.cpp: Actually trigger the hashing. */
-    void	hash_file(const tstring &file_name);
+    void	hash_file(const tstring &file_name, file_types type);
     void	hash_stdin();
     void	dump_hashlist(){ lock(); known.dump_hashlist(); unlock(); }
 };
@@ -904,8 +910,7 @@ public:;
     bool	should_hash_symlink(const tstring &fn,file_types *link_type);
     bool        should_hash_winpe(const tstring &fn);
     bool	should_hash_expert(const tstring &fn, file_types type);
-    bool	should_hash(const tstring &fn);
-
+    bool	should_hash(const tstring &fn, file_types &type);
     /* file_type returns the file type of a string.
      * If an error is found and ocb is provided, send the error to ocb.
      * If filesize and timestamp are provided, give them.

@@ -4,7 +4,7 @@
 
 # The algorithms:
 
-ALGS=md5.c md5.h sha1.c sha1.h sha256.c sha256.h whirlpool.c whirlpool.h tiger.c tiger.h 
+ALGS=md5.c md5.h sha1.c sha1.h sha256.c sha256.h whirlpool.c whirlpool.h tiger.c tiger.h xxhash.c xxhash.h
 all_sources = $(ALGS) main.cpp hashlist.cpp multihash.cpp display.cpp \
 	hash.cpp dig.cpp helpers.cpp xml.cpp xml.h files.cpp common.h main.h \
 	utf8.h utf8/checked.h utf8/core.h utf8/unchecked.h \
@@ -16,8 +16,9 @@ sha1deep_SOURCES = $(all_sources)
 sha256deep_SOURCES = $(all_sources)
 whirlpooldeep_SOURCES = $(all_sources)
 tigerdeep_SOURCES = $(all_sources)
+xxhashdeep_SOURCES = $(all_sources)
 
-bin_PROGRAMS = hashdeep md5deep sha1deep sha256deep whirlpooldeep tigerdeep
+bin_PROGRAMS = hashdeep md5deep sha1deep sha256deep whirlpooldeep tigerdeep xxhashdeep
 
 # Yes, this is gross; it would be better to make them all with hard links.
 # But this works. That didn't.

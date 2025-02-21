@@ -3,7 +3,8 @@ message digests, for any number of files while optionally recursively
 digging through the directory structure.  It can also take a list of known
 hashes and display the filenames of input files whose hashes either do or
 do not match any of the known hashes. This version supports MD5, SHA-1,
-SHA-256, Tiger, and Whirlpool hashes.
+SHA-256, Tiger Whirlpool and xxHash hashes.
+It includes the option -R to not follow symlinks implemented by https://github.com/s-d-adams
 
 See the file [NEWS](NEWS) for a list of changes between releases.
 
@@ -28,13 +29,6 @@ For example, to install to /home/foo/bin, use:
 
 There is complete documentation on how to use the program on the
 project's homepage, [https://github.com/jessek/hashdeep](https://github.com/jessek/hashdeep)
-
-## Release hashes
-
-The latest release is version 4.4. Here are the hashes for the Win32 versions:
-
-* MD5 047ff5311d821f667150f37695bd01b3
-* SHA256 d5e85933e74e5ba6a73f67346bc2e765075d26949c831a428166c92772f67dbc
 
 
 ## md5deep vs. hashdeep
@@ -169,6 +163,9 @@ http://www.cs.technion.ac.il/~biham/Reports/Tiger/
 
 The Whirlpool algorithm is defined at:
 http://planeta.terra.com.br/informatica/paulobarreto/WhirlpoolPage.html
+
+The xxHash algorithm is defined at:
+https://github.com/Cyan4973/xxHash/blob/dev/doc/xxhash_spec.md
 
 ## Theory of Operation
 

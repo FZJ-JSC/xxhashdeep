@@ -22,9 +22,14 @@ src/sha256deep
 src/whirlpooldeep
 src/tigerdeep
 src/sha3deep
+src/xxhashdeep
 
 md5deep-?.?-beta*.tar.gz
 md5deep-?.?.?.tar.gz
 md5deep-?.?-*.zip
 src/*.exe
 tests/testfiles/testfiles.zip
+
+# IDE-Files
+.idea
+cmake-build-*
