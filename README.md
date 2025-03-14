@@ -1,3 +1,8 @@
+xxhashdeep is a fork of [hashdeep](https://github.com/jessek/hashdeep) adding
+[xxhash](https://github.com/Cyan4973/xxHash) as a fast hash algorithm option.
+
+# hashdeep
+
 This is md5deep, a set of cross-platform tools to compute hashes, or
 message digests, for any number of files while optionally recursively
 digging through the directory structure.  It can also take a list of known
